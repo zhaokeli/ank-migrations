@@ -38,8 +38,8 @@ $migrationsConfig = $app->config('migrations') ?: [];
 $migrations       = [
     'name'       => 'Doctrine Migrations',
     'name_space' => 'db\migrations',
-    'version'    => 'migration_versions',
-    'path'       => dirname($app->getRuntime()) . '/db/migrations',
+    'table_name'    => 'kl_migration',
+    'path'       => dirname($app->getRuntimePath()) . '/db/migrations',
 ];
 $migrations = array_merge($migrations, $migrationsConfig);
 $dbParams   = [
@@ -56,7 +56,7 @@ $connection = DriverManager::getConnection($dbParams);
 $configuration = new Configuration($connection);
 $configuration->setName($migrations['name']);
 $configuration->setMigrationsNamespace($migrations['name_space']);
-$configuration->setMigrationsTableName($migrations['version']);
+$configuration->setMigrationsTableName($migrations['table_name']);
 $configuration->setMigrationsDirectory($migrations['path']);
 
 $helperSet = new HelperSet();
