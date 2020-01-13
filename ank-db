@@ -1,0 +1,75 @@
+#!/usr/bin/env php
+<?php
+//---------------------------------------------------------------
+// Setup Global Error Levels
+//
+//--------------------------------------------------------------
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+global $loader;
+//------------------------------------------------------------------------------
+// Load the composer autoloader
+//
+//------------------------------------------------------------------------------
+if (is_dir($vendor = __DIR__ . '/../vendor')) {
+    $loader = require $vendor . '/autoload.php';
+} elseif (is_dir($vendor = __DIR__ . '/../../../vendor')) {
+    $loader = require $vendor . '/autoload.php';
+} else {
+    die(
+        'You must set up the project dependencies, run the following commands:' . PHP_EOL .
+        'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL
+    );
+}
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\Migrations\Configuration\Configuration;
+use Doctrine\Migrations\Tools\Console\Command;
+use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
+
+$app    = \ank\App::getInstance();
+$config = $app->config('db_config');
+
+$dbParams = [
+    'driver'   => 'pdo_mysql',
+    'host'     => $config['server'],
+    'port'     => $config['port'],
+    'user'     => $config['username'],
+    'password' => $config['password'],
+    'dbname'   => $config['database_name'],
+];
+
+$connection = DriverManager::getConnection($dbParams);
+// 迁移组件配置
+$configuration = new Configuration($connection);
+$configuration->setName('Doctrine Migrations');
+$configuration->setMigrationsNamespace('db\migrations');
+$configuration->setMigrationsTableName('migration_versions');
+$configuration->setMigrationsDirectory(__DIR__ . '/db/migrations');
+
+$helperSet = new HelperSet();
+$helperSet->set(new QuestionHelper(), 'question');
+$helperSet->set(new ConnectionHelper($connection), 'db');
+$helperSet->set(new ConfigurationHelper($connection, $configuration));
+
+$cli = new Application('Doctrine Migrations');
+$cli->setCatchExceptions(true);
+$cli->setHelperSet($helperSet);
+
+$cli->addCommands([
+    new Command\DumpSchemaCommand(),
+    new Command\ExecuteCommand(),
+    new Command\GenerateCommand(),
+    new Command\LatestCommand(),
+    new Command\MigrateCommand(),
+    new Command\RollupCommand(),
+    new Command\StatusCommand(),
+    new Command\VersionCommand(),
+]);
+
+$cli->run();
