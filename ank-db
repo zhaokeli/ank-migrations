@@ -32,10 +32,17 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 
-$app    = \ank\App::getInstance();
-$config = $app->config('db_config');
-
-$dbParams = [
+$app              = \ank\App::getInstance();
+$config           = $app->config('db_config');
+$migrationsConfig = $app->config('migrations') ?: [];
+$migrations       = [
+    'name'       => 'Doctrine Migrations',
+    'name_space' => 'db\migrations',
+    'version'    => 'migration_versions',
+    'path'       => dirname($app->getRuntime()) . '/db/migrations',
+];
+$migrations = array_merge($migrations, $migrationsConfig);
+$dbParams   = [
     'driver'   => 'pdo_mysql',
     'host'     => $config['server'],
     'port'     => $config['port'],
@@ -47,10 +54,10 @@ $dbParams = [
 $connection = DriverManager::getConnection($dbParams);
 // 迁移组件配置
 $configuration = new Configuration($connection);
-$configuration->setName('Doctrine Migrations');
-$configuration->setMigrationsNamespace('db\migrations');
-$configuration->setMigrationsTableName('migration_versions');
-$configuration->setMigrationsDirectory(__DIR__ . '/db/migrations');
+$configuration->setName($migrations['name']);
+$configuration->setMigrationsNamespace($migrations['name_space']);
+$configuration->setMigrationsTableName($migrations['version']);
+$configuration->setMigrationsDirectory($migrations['path']);
 
 $helperSet = new HelperSet();
 $helperSet->set(new QuestionHelper(), 'question');
