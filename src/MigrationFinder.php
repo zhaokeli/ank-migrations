@@ -21,7 +21,10 @@ class MigrationFinder extends Finder implements MigrationDeepFinder
         $dirs  = explode(',', $directory);
         $files = [];
         foreach ($dirs as $key => $dir) {
-            $dir   = $this->getRealPath($dir);
+            $dir = realpath($dir);
+            if ($dir === false || !is_dir($dir)) {
+                continue;
+            }
             $files = array_merge($files, $this->getMatches($this->createIterator($dir)));
         }
 
