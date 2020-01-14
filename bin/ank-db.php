@@ -6,21 +6,25 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 global $loader;
-//------------------------------------------------------------------------------
-// Load the composer autoloader
-//
-//------------------------------------------------------------------------------
-if (is_dir($vendor = __DIR__ . '/../vendor')) {
-    $loader = require $vendor . '/autoload.php';
-} elseif (is_dir($vendor = __DIR__ . '/../../../vendor')) {
-    $loader = require $vendor . '/autoload.php';
-} else {
-    die(
-        'You must set up the project dependencies, run the following commands:' . PHP_EOL .
-        'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
-        'php composer.phar install' . PHP_EOL
-    );
+$autoloadFiles = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+$autoloaderFound = false;
+
+foreach ($autoloadFiles as $autoloadFile) {
+    if (!file_exists($autoloadFile)) {
+        continue;
+    }
+    $loader          = require_once $autoloadFile;
+    $autoloaderFound = true;
 }
+
+$autoloaderFound or die(
+    'You must set up the project dependencies, run the following commands:' . PHP_EOL .
+    'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
+    'php composer.phar install' . PHP_EOL
+);
 
 use ank\migration\MigrationFinder;
 use Doctrine\DBAL\DriverManager;
