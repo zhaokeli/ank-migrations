@@ -42,6 +42,9 @@ $migrations       = [
     'path'       => dirname($app->getRuntimePath()) . '/db/migrations',
 ];
 $migrations = array_merge($migrations, $migrationsConfig);
+if(!is_dir($migrations['path'])){
+    @mkdir($migrations['path'],777,true);
+}
 $dbParams   = [
     'driver'   => 'pdo_mysql',
     'host'     => $config['server'],
