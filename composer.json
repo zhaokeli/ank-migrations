@@ -16,7 +16,8 @@
             "logic\\": "logic",
             "widget\\": "widget",
             "validate\\": "validate",
-            "utils\\": "utils"
+            "utils\\": "utils",
+            "ank\\migration\\": "src"
         }
     },
     "bin": [

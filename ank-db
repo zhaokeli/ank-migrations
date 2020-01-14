@@ -31,7 +31,7 @@ use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
-
+use ank\migration\MigrationFinder;
 $app              = \ank\App::getInstance();
 $config           = $app->config('db_config');
 $migrationsConfig = $app->config('migrations') ?: [];
@@ -39,9 +39,14 @@ $migrations       = [
     'name'       => 'Doctrine Migrations',
     'name_space' => 'db\migrations',
     'table_name'    => 'kl_migration',
-    'path'       => dirname($app->getRuntimePath()) . '/db/migrations',
+    // 'path'       => dirname($app->getRuntimePath()) . '/db/migrations',
+    'path'=>[]
 ];
 $migrations = array_merge($migrations, $migrationsConfig);
+
+if(is_array($migrations['path'])){
+    $migrations['path']=implode(',',$migrations['path']);
+}
 if(!is_dir($migrations['path'])){
     @mkdir($migrations['path'],777,true);
 }
@@ -61,6 +66,7 @@ $configuration->setName($migrations['name']);
 $configuration->setMigrationsNamespace($migrations['name_space']);
 $configuration->setMigrationsTableName($migrations['table_name']);
 $configuration->setMigrationsDirectory($migrations['path']);
+$configuration->setMigrationsFinder(new MigrationsFinder());
 
 $helperSet = new HelperSet();
 $helperSet->set(new QuestionHelper(), 'question');
