@@ -5,13 +5,13 @@
 'migrations'  => [
     'name'       => 'Stat Db Migrations',
     'name_space' => 'migration',
-    'table_name' => 'kl_migration',
+    'table_name' => 'migration',
     'paths'      => [dirname(dirname(__DIR__)) . '/migration'],
 ],
 ```
  * name 为项目的名字,可自定义
  * name_space 为迁移类的命名空间，尽量保持默认，跟框架的命名空间规则一至
- * table_name 迁移类在数据库生成的迁移记录表名字
+ * table_name 迁移类在数据库生成的迁移记录表名字，不带前缀
  * paths 数组,迁移类所在路径(绝对路径),一般路径跟 controller 目录同级(跟框架目录规则一至)
  以上配置可以在多个项目中设置，迁移命令执行的时候会自动合并，但顺序不确定，所以建议除啦 **paths** 外其它配置项只配置一次
 

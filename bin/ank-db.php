@@ -45,7 +45,8 @@ $migrations       = [
     // 'paths'       => dirname($app->getRuntimePath()) . '/db/migrations',
     'paths'      => [],
 ];
-$migrations = array_merge($migrations, $migrationsConfig);
+$migrations               = array_merge($migrations, $migrationsConfig);
+$migrations['table_name'] = $config['prefix'] . $migrations['table_name'];
 function getChar($paths)
 {
     echo 'Input path index' . PHP_EOL;
