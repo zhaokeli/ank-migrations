@@ -23,6 +23,7 @@ if (is_dir($vendor = __DIR__ . '/../vendor')) {
     );
 }
 
+use ank\migration\MigrationFinder;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\Migrations\Configuration\Configuration;
@@ -31,26 +32,51 @@ use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use ank\migration\MigrationFinder;
 $app              = \ank\App::getInstance();
 $config           = $app->config('db_config');
 $migrationsConfig = $app->config('migrations') ?: [];
 $migrations       = [
-    'name'       => 'Doctrine Migrations',
+    'name'       => 'ANK DB Migrations',
     'name_space' => 'db\migrations',
-    'table_name'    => 'kl_migration',
-    // 'path'       => dirname($app->getRuntimePath()) . '/db/migrations',
-    'path'=>[]
+    'table_name' => 'kl_migration',
+    // 'paths'       => dirname($app->getRuntimePath()) . '/db/migrations',
+    'paths'      => [],
 ];
 $migrations = array_merge($migrations, $migrationsConfig);
+function getChar($paths)
+{
+    echo 'Input path index' . PHP_EOL;
+    foreach ($paths as $key => $value) {
+        echo $key, ' :', $value, PHP_EOL;
+    }
+    while (!feof(STDIN)) {
+        $line = fread(STDIN, 1024);
 
-if(is_array($migrations['path'])){
-    $migrations['path']=implode(',',$migrations['path']);
+        return $line;
+    }
 }
-if(!is_dir($migrations['path'])){
-    @mkdir($migrations['path'],777,true);
+
+if (is_array($migrations['paths'])) {
+    $par = $argv[1] ?? '';
+    //生成迁移脚本只生成最后一个路径
+    if ($par === 'migrations:generate') {
+        $index = 0;
+        while (true) {
+            $index = intval(getChar($migrations['paths']));
+            if (isset($migrations['paths'][$index])) {
+                break;
+            }
+        }
+        $migrations['paths'] = $migrations['paths'][$index];
+        if (!is_dir($migrations['paths'])) {
+            @mkdir($migrations['paths'], 777, true);
+        }
+    } else {
+        $migrations['paths'] = implode(',', $migrations['paths']);
+    }
 }
-$dbParams   = [
+
+$dbParams = [
     'driver'   => 'pdo_mysql',
     'host'     => $config['server'],
     'port'     => $config['port'],
@@ -65,8 +91,8 @@ $configuration = new Configuration($connection);
 $configuration->setName($migrations['name']);
 $configuration->setMigrationsNamespace($migrations['name_space']);
 $configuration->setMigrationsTableName($migrations['table_name']);
-$configuration->setMigrationsDirectory($migrations['path']);
-$configuration->setMigrationsFinder(new MigrationsFinder());
+$configuration->setMigrationsDirectory($migrations['paths']);
+$configuration->setMigrationsFinder(new MigrationFinder());
 
 $helperSet = new HelperSet();
 $helperSet->set(new QuestionHelper(), 'question');
