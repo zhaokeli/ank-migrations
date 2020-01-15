@@ -47,7 +47,7 @@ $migrations       = [
 ];
 $migrations               = array_merge($migrations, $migrationsConfig);
 $migrations['table_name'] = $config['prefix'] . $migrations['table_name'];
-function getChar($paths)
+function getInputChar($paths)
 {
     echo 'Input path index' . PHP_EOL;
     foreach ($paths as $key => $value) {
@@ -66,7 +66,7 @@ if (is_array($migrations['paths'])) {
     if ($par === 'migrations:generate') {
         $index = 0;
         while (true) {
-            $index = intval(getChar($migrations['paths']));
+            $index = intval(getInputChar($migrations['paths']));
             if (isset($migrations['paths'][$index])) {
                 break;
             }
