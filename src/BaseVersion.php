@@ -23,6 +23,11 @@ class BaseVersion extends AbstractMigration
 
     }
 
+    public function exec($query, array $params = [], array $types = [])
+    {
+        return $this->connection->executeUpdate($query, $params, $types);
+    }
+
     public function up(Schema $schema): void
     {
 
