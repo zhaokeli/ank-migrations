@@ -63,7 +63,7 @@ function getInputChar($paths)
 if (is_array($migrations['paths'])) {
     $par = $argv[1] ?? '';
     //生成迁移脚本只生成最后一个路径
-    if ($par === 'migrations:generate') {
+    if ($par === 'migrations:generate' || $par === 'generate') {
         $index = 0;
         while (true) {
             $index = intval(getInputChar($migrations['paths']));
