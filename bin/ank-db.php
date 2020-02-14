@@ -35,7 +35,10 @@ use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
-$app              = \ank\App::getInstance();
+$app = \ank\App::getInstance([
+    'siteRoot' => realpath(__dir__ . '/../../../../web'),
+    'appPath'  => realpath(__dir__ . '/../../../../'),
+]);
 $config           = $app->config('db_config');
 $migrationsConfig = $app->config('migrations') ?: [];
 $migrations       = [
