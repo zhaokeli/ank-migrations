@@ -6,7 +6,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 global $loader;
-$autoloadFiles = [
+$autoloadFiles   = [
     __DIR__ . '/../vendor/autoload.php',
     __DIR__ . '/../../../autoload.php',
 ];
@@ -35,13 +35,15 @@ use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
+
 $app = \ank\App::getInstance([
     'siteRoot' => realpath(__dir__ . '/../../../../web'),
     'appPath'  => realpath(__dir__ . '/../../../../'),
 ]);
-$config           = $app->config('db_config');
-$migrationsConfig = $app->config('migrations') ?: [];
-$migrations       = [
+$app->init();
+$config                   = $app->config('db_config');
+$migrationsConfig         = $app->config('migrations') ?: [];
+$migrations               = [
     'name'       => 'ANK DB Migrations',
     'name_space' => 'db\migrations',
     'table_name' => 'kl_migration',
@@ -78,7 +80,8 @@ if (is_array($migrations['paths'])) {
         if (!is_dir($migrations['paths'])) {
             @mkdir($migrations['paths'], 777, true);
         }
-    } else {
+    }
+    else {
         $migrations['paths'] = implode(',', $migrations['paths']);
     }
 }
