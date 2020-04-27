@@ -3,14 +3,13 @@
     "type": "library",
     "minimum-stability": "dev",
     "authors": [
-    {
-        "name": "kelicom",
-        "email": "735579768@qq.com"
-    }],
-    "autoload":
-    {
-        "psr-4":
         {
+            "name": "kelicom",
+            "email": "735579768@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
             "controller\\": "controller",
             "model\\": "model",
             "logic\\": "logic",
@@ -23,17 +22,13 @@
     "bin": [
         "bin/ank-db"
     ],
-    "extra":
-    {
-        "branch-alias":
-        {
+    "extra": {
+        "branch-alias": {
             "dev-master": "1.0.x-dev"
         }
     },
-    "require":
-    {
+    "require": {
         "ank/framework": "~1.1",
-        "doctrine/migrations": "^2.2",
-        "ocramius/proxy-manager": "2.2.3"
+        "doctrine/migrations": "~2.2.1"
     }
 }
