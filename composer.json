@@ -8,6 +8,7 @@
       "email": "735579768@qq.com"
     }
   ],
+  "license": "MIT",
   "autoload": {
     "psr-4": {
       "controller\\": "controller",
@@ -29,7 +30,7 @@
   },
   "require": {
     "ank/framework": "^1.0",
-    "doctrine/migrations": "~3.0"
+    "doctrine/migrations": "~2.0"
   },
   "description": "database migrations"
 }
