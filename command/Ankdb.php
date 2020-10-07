@@ -22,8 +22,8 @@ class Ankdb extends Command
         $this
             ->setName('db')
             // the short description shown while running "php bin/console list"
-            ->setDescription('数据库迁移操作');
-        // ->addArgument('pathinfo', InputArgument::REQUIRED, '参数格式为 /module/controller/action');
+            ->setDescription('数据库迁移升级或生成迁移脚本')
+            ->addArgument('action', InputArgument::REQUIRED, '参数1：migrate [-n] 迁移到最新版本,-n为不需要确认' . PHP_EOL . '参数2：generate 生成一个迁移脚本');
         // 配置一个可选参数
         //            ->addArgument('optional_argument', InputArgument::OPTIONAL, 'this is a optional argument')
         // 配置选项 isHan，缩写为 -x，可选，不需要值
@@ -44,7 +44,11 @@ class Ankdb extends Command
         // $app->run(Request::__make($app, $pathinfo))->send();
         global $argv, $argc;
         array_shift($argv);
-        $argc--;
+        // array_shift($argv);
+        array_shift($_SERVER['argv']);
+        // array_shift($_SERVER['argv']);
+        $argc            -= 1;
+        $_SERVER['argc'] -= 1;
         require dirname(__DIR__) . '/bin/ank-db.php';
         return 0;
     }
