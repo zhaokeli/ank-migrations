@@ -35,8 +35,9 @@ use Doctrine\Migrations\Tools\Console\Helper\ConfigurationHelper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use ank\App;
 
-$app = \ank\App::getInstance([
+$app = App::getInstance([
     'siteRoot' => realpath(__dir__ . '/../../../../web'),
     'appPath'  => realpath(__dir__ . '/../../../../'),
 ]);
@@ -59,9 +60,7 @@ function getInputChar($paths)
         echo $key, ' :', $value, PHP_EOL;
     }
     while (!feof(STDIN)) {
-        $line = fread(STDIN, 1024);
-
-        return $line;
+        return fread(STDIN, 1024);
     }
 }
 

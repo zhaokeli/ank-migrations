@@ -11,13 +11,8 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "controller\\": "controller",
-      "model\\": "model",
-      "logic\\": "logic",
-      "widget\\": "widget",
-      "validate\\": "validate",
-      "utils\\": "utils",
-      "ank\\migration\\": "src"
+      "ank\\migration\\": "src",
+      "command\\": "command"
     }
   },
   "bin": [
