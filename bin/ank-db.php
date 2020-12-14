@@ -57,7 +57,7 @@ function getInputChar($paths)
 {
     echo 'Input path index' . PHP_EOL;
     foreach ($paths as $key => $value) {
-        echo $key, ' :', $value, PHP_EOL;
+        echo $key, ' :', str_replace('\\', '/', $value), PHP_EOL;
     }
     while (!feof(STDIN)) {
         return fread(STDIN, 1024);
@@ -66,6 +66,7 @@ function getInputChar($paths)
 
 if (is_array($migrations['paths'])) {
     $migrations['paths'] = array_unique($migrations['paths']);
+    $migrations['paths'] = array_values($migrations['paths']);
     $par                 = $argv[1] ?? '';
     //生成迁移脚本只生成最后一个路径
     if ($par === 'migrations:generate' || $par === 'generate') {
