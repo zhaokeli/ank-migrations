@@ -40,6 +40,12 @@ class BaseVersion extends AbstractMigration
         parent::addSql($sql, $params, $types);
     }
 
+    /**
+     * 替换sql中的表前缀
+     * @param string $sql
+     * @param array  $arr
+     * @return string
+     */
     protected function replaceSql(string $sql, $arr = [])
     {
         $config = $this->app->config('db_config');
@@ -51,4 +57,36 @@ class BaseVersion extends AbstractMigration
             $arr)
         );
     }
+
+    /**
+     * 数据库是否存在,表格式为不带前缀的下划线格式
+     */
+    protected function tableExist(Schema $schema, string $tableName)
+    {
+        return $schema->hasTable($this->replaceSql('__PREFIX__' . $tableName));
+    }
+
+    /**
+     * 指定表的字段是否存在
+     */
+    protected function fieldExist(Schema $schema, string $fieldName, string $tableName)
+    {
+        if (!$this->tableExist($schema, $table)) {
+            return false;
+        }
+        $table = $schema->getTable($this->replaceSql('__PREFIX__' . $tableName));
+        return $table->hasColumn($fieldName);
+    }
+
+    /**
+     * 查询数据
+     * @param       $sql
+     * @param array $params
+     * @param array $types
+     */
+    protected function fetchAll($sql, array $params = [], $types = [])
+    {
+        return $this->connection->fetchAll($sql, $params, $types);
+    }
+
 }
