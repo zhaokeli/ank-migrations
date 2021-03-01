@@ -81,7 +81,7 @@ class BaseVersion extends AbstractMigration
      */
     protected function fieldExist(Schema $schema, string $fieldName, string $tableName)
     {
-        if (!$this->tableExist($schema, $table)) {
+        if (!$this->tableExist($schema, $tableName)) {
             return false;
         }
         $table = $schema->getTable($this->replaceSql('__PREFIX__' . $tableName));
